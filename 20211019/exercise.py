@@ -35,17 +35,21 @@ def interpolate():
     global interpolation
     interpolation = interp1d(time, m_free.T[0], fill_value='extrapolate')
     xs = np.linspace(time[0], time[-1], num=10000, endpoint=False)
-    ax[0].plot(xs, interpolation(xs), "x", label="equidistant data")
+    ax[0].set_ylabel("Signal")
+    ax[0].plot(xs, interpolation(xs), "x")
 
 
 def fit():
     fit_points = 12500
     fit, _ = curve_fit(sinus, time[-fit_points:], m_free.T[0]
                        [-fit_points:], p0=[0, 22e9, np.pi/2, 0])
-    ax[0].plot(time[-fit_points:], sinus(time[-fit_points:], *fit), label="fit curve")
+    ax[0].plot(time[-fit_points:], sinus(time[-fit_points:], *fit))
+    ax[0].legend(["equidistant data", "fit curve"])
 
 def ddx():
+    ax[1].set_ylabel("Derivative")
     ax[1].plot(derivative(interpolation, time, dx=1e-12))
+    ax[1].legend(["derivative"])
 
 def fourier():
     # timestep defines how fine the ftt resolution is
@@ -62,7 +66,10 @@ def fourier():
     N = int((time[-1] - time[0])//deltaT)
     yf = fft(interpolation(np.linspace(time[0], time[-1], num=N, endpoint=False)))
     xf = fftfreq(N, d=deltaT)[:N//2]
+    ax[2].set_xlabel("Freq (Hz)")
+    ax[2].set_ylabel("Spectrum")
     ax[2].plot(xf, 2/N * np.abs(yf[:N//2]))
+    ax[2].legend(["fourier transform"])
 
 def sinus(x, a, b, c, d):
     return a*np.sin(b*x + c) + d
