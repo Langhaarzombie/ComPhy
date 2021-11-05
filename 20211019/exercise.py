@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.interpolate import UnivariateSpline
+from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from scipy.misc import derivative
 from scipy.fft import fft, fftfreq
@@ -33,7 +33,7 @@ def calculate_averages():
 
 def interpolate():
     global interpolation
-    interpolation = UnivariateSpline(time, m_free.T[0], s=0)
+    interpolation = interp1d(time, m_free.T[0], fill_value='extrapolate')
     xs = np.linspace(time[0], time[-1], num=10000, endpoint=False)
     ax[0].plot(xs, interpolation(xs), "x", label="equidistant data")
 
@@ -45,8 +45,7 @@ def fit():
     ax[0].plot(time[-fit_points:], sinus(time[-fit_points:], *fit), label="fit curve")
 
 def ddx():
-    print(interpolation.derivative)
-    # ax[1].plot(time, interpolation.derivative)
+    ax[1].plot(derivative(interpolation, time, dx=1e-12))
 
 def fourier():
     # timestep defines how fine the ftt resolution is
