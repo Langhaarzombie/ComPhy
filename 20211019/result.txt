@@ -1,0 +1,6 @@
+The average for the free layer:
+[[-6.54356212e-05]
+ [-1.70911390e-03]
+ [ 8.60762238e-01]]
+Magintude of that vector:
+0.8607639376225407
