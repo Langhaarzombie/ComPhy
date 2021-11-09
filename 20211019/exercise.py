@@ -22,9 +22,10 @@ def init(file='20211019/oscillator.dat'):
 
 def calculate_averages():
     avg = np.ndarray((3, 1))
-    avg[0] = np.mean(m_free.T[0])
-    avg[1] = np.mean(m_free.T[1])
-    avg[2] = np.mean(m_free.T[2])
+    l = len(time)
+    avg[0] = np.sum(m_free.T[0])/l
+    avg[1] = np.sum(m_free.T[1])/l
+    avg[2] = np.sum(m_free.T[2])/l
     print("The average for the free layer:")
     print(avg)
     print("Magintude of that vector:")
