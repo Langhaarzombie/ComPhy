@@ -64,14 +64,14 @@ def heun(h, k2, k1=1, stop=10):
 def C(t, k2, k1=1):
     if k2 == k1:
         return A0 * (1 - np.exp(-k1 * t) * (1 + k1 * t))
-    return A0 * (1 - (k1 * np.exp(-k2 * t) - k2 * np.exp(-k1 * t)) / (k2 - k1))
+    return A0 * (1 - (k2 * np.exp(-k1 * t) - k1 * np.exp(-k2 * t)) / (k2 - k1))
 
 def analytical(h, k2, k1=1, stop=10):
     xs = np.arange(stop+h, step=h)
     return xs, C(xs, k2, k1)
 
 if __name__ == "__main__":
-    fig, ax = plt.subplots(4)
+    fig, ax = plt.subplots(5)
 
     # ee_xs, ee_a_ys, ee_b_ys, ee_c_ys = euler_expl(0.1, 1)
     # ax[0].plot(ee_xs, ee_a_ys)
@@ -85,15 +85,31 @@ if __name__ == "__main__":
 
     for k2 in [1000, 100, 10, 1]:
         he_xs, he_a_ys, he_b_ys, he_c_ys = heun(0.0005, k2)
-        ax[0].plot(he_xs, he_a_ys)
-        ax[1].plot(he_xs, he_b_ys)
-        ax[2].plot(he_xs, he_c_ys)
+        ax[0].plot(he_xs, he_a_ys, label=f"k={k2}")
+        ax[1].plot(he_xs, he_b_ys, label=f"k={k2}")
+        ax[2].plot(he_xs, he_c_ys, label=f"k={k2}")
 
-    ana_xs, ana_c_ys = analytical(0.01, 1)
-    ax[2].plot(ana_xs, ana_c_ys, label="Analytic solution")
+        ana_xs, ana_c_ys = analytical(0.01, k2)
+        ax[3].plot(ana_xs, ana_c_ys, label=f"Analytic k={k2}")
 
-    ax[3].plot(ana_xs, np.sqrt((ana_c_ys - he_c_ys[::20])**2), label="Difference to analytic solution")
+    ax[4].plot(ana_xs, ana_c_ys - he_c_ys[::20], label=f"Difference k=1")
+
+    ax[0].set_xlabel("Time [s]")
+    ax[1].set_xlabel("Time [s]")
+    ax[2].set_xlabel("Time [s]")
     ax[3].set_xlabel("Time [s]")
-    ax[3].set_ylabel("|C(t) - heun_c(t)|")
+    ax[4].set_xlabel("Time [s]")
+    ax[0].set_ylabel("A(t)")
+    ax[1].set_ylabel("B(t)")
+    ax[2].set_ylabel("C(t)")
+    ax[3].set_ylabel("C_ana(t)")
+    ax[4].set_ylabel("C_ana(t) - C(t)")
 
+    ax[0].legend()
+    ax[1].legend()
+    ax[2].legend()
+    ax[3].legend()
+    ax[4].legend()
+
+    plt.title("Simple Reaction Equation")
     plt.show()
