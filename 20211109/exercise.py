@@ -6,7 +6,23 @@ B0 = 0.0
 C0 = 0.0
 
 def euler_expl(h, k2, k1=1, stop=10):
-    # u_i+1 = u_i + h f(t_i, u_i)
+    """
+    Solves the decay ode using explicit euler method:
+        u_i+1 = u_i + h f(t_i, u_i)
+    h    ... timestep
+    k2   ... decay ratio for B
+    k1   ... decay ratio for A
+    stop ... time to which to simulate
+
+    Returns:
+    xs   ... timesteps of simulation
+    a_ys ... amount of A over time
+    b_ys ... amount of B over time
+    c_ys ... amount of C over time
+
+    Decay is happening from A - B - C.
+
+    """
     xs = np.arange(stop, step=h)
     a_ys = np.array([A0])
     b_ys = np.array([B0])
@@ -23,7 +39,24 @@ def euler_expl(h, k2, k1=1, stop=10):
     return np.append(xs, [stop]), a_ys, b_ys, c_ys
 
 def euler_impl(h, k2, k1=1, stop=10):
-    # u_i+1 = u_i + h f(t_i+1, u_i+1)
+    """
+    Solves the decay ode using implicit euler method:
+        u_i+1 = u_i + h f(t_i+1, u_i+1)
+    h    ... timestep
+    k2   ... decay ratio for B
+    k1   ... decay ratio for A
+    stop ... time to which to simulate
+
+    Returns:
+    xs   ... timesteps of simulation
+    a_ys ... amount of A over time
+    b_ys ... amount of B over time
+    c_ys ... amount of C over time
+
+    Decay is happening from A - B - C.
+    The equation to get an explicit form for u_i+1 was transformed
+    on paper.
+    """
     xs = np.arange(stop, step=h)
     a_ys = np.array([A0])
     b_ys = np.array([B0])
@@ -40,8 +73,23 @@ def euler_impl(h, k2, k1=1, stop=10):
     return np.append(xs, [stop]), a_ys, b_ys, c_ys
 
 def heun(h, k2, k1=1, stop=10):
-    # u_i+1 = u_i + h/2 (u_i + f(t_i+1, u_ip))
-    # u_ip = u_i + h f(t_i, u_i)
+    """
+    Solves the decay ode using implicit euler method:
+        u_i+1 = u_i + h/2 (u_i + f(t_i+1, u_ip))
+        u_ip = u_i + h f(t_i, u_i)
+    h    ... timestep
+    k2   ... decay ratio for B
+    k1   ... decay ratio for A
+    stop ... time to which to simulate
+
+    Returns:
+    xs   ... timesteps of simulation
+    a_ys ... amount of A over time
+    b_ys ... amount of B over time
+    c_ys ... amount of C over time
+
+    Decay is happening from A - B - C.
+    """
     xs = np.arange(stop, step=h)
     a_ys = np.array([A0])
     b_ys = np.array([B0])
@@ -62,6 +110,16 @@ def heun(h, k2, k1=1, stop=10):
     return np.append(xs, [stop]), a_ys, b_ys, c_ys
 
 def C(t, k2, k1=1):
+    """
+    Calculates the analytic solution for the amount of C over time.
+
+    t  ... timesteps
+    k2 ... decay ratio for B
+    k1 ... decay ratio for A
+
+    Returns:
+    amount of C over time
+    """
     if k2 == k1:
         return A0 * (1 - np.exp(-k1 * t) * (1 + k1 * t))
     return A0 * (1 - (k2 * np.exp(-k1 * t) - k1 * np.exp(-k2 * t)) / (k2 - k1))
@@ -111,5 +169,4 @@ if __name__ == "__main__":
     ax[3].legend()
     ax[4].legend()
 
-    plt.title("Simple Reaction Equation")
     plt.show()
