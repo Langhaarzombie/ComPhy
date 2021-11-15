@@ -5,6 +5,15 @@ A0 = 1.0
 B0 = 0.0
 C0 = 0.0
 
+"""
+A is decaying to B and B is decaying to C.
+The decay ratios are given by k1 (for A) and k2 (for B).
+This behaviour is described by:
+A' = -k1 A
+B' = - A' - k2 B
+C = - B' = A0 - A - B
+"""
+
 def euler_expl(h, k2, k1=1, stop=10):
     """
     Solves the decay ode using explicit euler method:
