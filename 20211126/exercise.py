@@ -14,7 +14,7 @@ def with_dense_matrix(N):
     b = np.zeros(D)
     b[:N] = -y0
 
-    np.savetxt('dense_matrix_solved.dat', np.flip(linalg.solve(A, b)))
+    np.savetxt('dense_matrix_solved.dat', linalg.solve(A, b))
 
     # One problem I see here is that the boundary is not included in the plot.
     # We could solve tha by simply appending to the results array, but it would
@@ -28,7 +28,12 @@ if __name__ == "__main__":
 
     DS = np.array(np.loadtxt('dense_matrix_solved.dat'))
 
-    plt.imshow(np.reshape(DS, (N, N)), cmap='jet')
+    # makes a heat map from the values in the results matrix
+    # origin lower sets the start to be from the lower left (else it would
+    # start at the top)
+    # extent tells the axis to go from 0 to 1
+    # cmap chooses a nice looking color map for the heat map
+    plt.imshow(np.reshape(DS, (N, N)), extent=[0,1,0,1], cmap='jet', origin='lower')
     plt.colorbar()
     plt.show()
 
