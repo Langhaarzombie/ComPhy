@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Too large files from exercise 20211202
+mesh.xml
+mesh_physical_region.xml
+*.vtu
+*.msh
+*.pvd
