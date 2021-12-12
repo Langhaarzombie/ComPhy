@@ -48,25 +48,31 @@ rho = Constant(1.0)
 
 # Define forms and boundary conditions
 # Bilinear form
-a  = rho*dot(grad(u), grad(v))*dx
+a  = dot(grad(u), grad(v))*dx
 # Linear form
 f = Constant(0)
-uC1 = Constant(0)
-uC2 = Constant(1)
-L  = f*v*dx + uC1*v*ds(2) + uC2*v*ds(3)
-# Dirichlet boundary conditions
-#  bcs = dirichlet(contact1, contact2)
-#  bcs = dirichlet_neumann(contact1)
+L_DD  = f*v*dx
+L_DN  = f*v*dx + Constant(1.0)*v*ds(3)
+L_NN  = f*v*dx + Constant(0.0)*v*ds(2) + Constant(1.0)*v*ds(3)
 
 # Assemble
-#  A, b = assemble_system(a, L, bcs)
-A, b = assemble_system(a, L)
+A_DD, b_DD = assemble_system(a, L_DD, dirichlet(contact1, contact2))
+A_DN, b_DN = assemble_system(a, L_DN, dirichlet_neumann(contact1))
+A_NN, b_NN = assemble_system(a, L_NN)
 
 # Solve system
-u = Function(V)
-solve(A, u.vector(), b)
+u_DD = Function(V)
+u_DN = Function(V)
+u_NN = Function(V)
+solve(A_DD, u_DD.vector(), b_DD)
+solve(A_DN, u_DN.vector(), b_DN)
+solve(A_NN, u_NN.vector(), b_NN)
 
 VV = VectorFunctionSpace(mesh, "CG", 1)
-j = project(grad(u), VV)
+j_DD = project(grad(u_DD), VV)
+j_DN = project(grad(u_DN), VV)
+j_NN = project(grad(u_NN), VV)
 
-File("j.pvd") << j
+File("j_DD.pvd") << j_DD
+File("j_DN.pvd") << j_DN
+File("j_NN.pvd") << j_NN
