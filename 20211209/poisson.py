@@ -48,7 +48,7 @@ rho = Constant(1.0)
 
 # Define forms and boundary conditions
 # Bilinear form
-a  = dot(grad(u), grad(v))*dx
+a  = rho*dot(grad(u), grad(v))*dx
 # Linear form
 f = Constant(0)
 L_DD  = f*v*dx
