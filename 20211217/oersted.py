@@ -1,3 +1,8 @@
+# Feedback
+# ds is not used
+# I can use facet_domains for the boundary condition: DirichletBC(V, 0.0, facet_domain, 2)
+# I did not implement the different permeability of the coil and air
+
 from dolfin import *
 
 class Box(SubDomain):
